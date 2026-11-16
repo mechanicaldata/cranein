@@ -2,7 +2,7 @@
    The whole app is a single HTML page with inline script, so caching the
    app shell makes it fully usable with no network. Records live in
    localStorage on the device and are never sent anywhere. */
-const CACHE = 'eot-cranes-v6';
+const CACHE = 'eot-cranes-v7';
 const ROOT = self.registration.scope;
 const SHELL = [
   '', 'manifest.webmanifest',

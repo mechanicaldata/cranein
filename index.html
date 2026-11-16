@@ -87,7 +87,7 @@ const D={"specs": [{"crane": "Crane 1", "hoist": "Main 10 T", "std": 16, "length
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const fmt=d=>{if(!d)return '–';const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d);return m?`${m[3]}-${MON[+m[2]-1]}-${m[1]}`:d};
+const fmt=d=>{if(!d)return '–';const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d);return m?`${m[3]}-${MON[+m[2]-1]}-${m[1]}`:fmtM(d)};
 const fmtM=m=>{const x=/^(\d{4})-(\d{2})$/.exec(m||'');return x?`${MON[+x[2]-1]} ${x[1]}`:(m||'–')};
 const today=()=>new Date().toISOString().slice(0,10);
 const uid=()=>Math.random().toString(36).slice(2,9);
@@ -103,7 +103,8 @@ function seed(){const s=JSON.parse(JSON.stringify(D.seed));for(const k in s)s[k]
 // older data files (before furnaces were added) get the furnace sections filled in
 function migrate(o){if(!Array.isArray(o.coil))o.coil=COIL_SEED.map(r=>({...r}));if(!Array.isArray(o.fstock))o.fstock=FSTOCK_SEED.map(r=>({...r}));if(!Array.isArray(o.fsvc))o.fsvc=[];
 // couplings / brake drums gained two hub-diameter columns: pad old rows; rows that are all N/A stay N/A
-for(const n of ['Couplings','Brake Drums'])((o.dims&&o.dims[n])||[]).forEach(r=>{if(r.length<8){while(r.length<8)r.push(null);if(r.slice(2,6).every(v=>v==='N/A'))r[6]=r[7]='N/A'}});return o}
+for(const n of ['Couplings','Brake Drums'])((o.dims&&o.dims[n])||[]).forEach(r=>{if(r.length<8){while(r.length<8)r.push(null);if(r.slice(2,6).every(v=>v==='N/A'))r[6]=r[7]='N/A'}});
+(o.maint||[]).forEach(r=>{if(r.month!==undefined){if(!r.date)r.date=r.month;delete r.month}});return o}
 let S=(()=>{try{const t=localStorage.getItem(KEY);if(t)return JSON.parse(t)}catch(e){}return seed()})();
 for(const k in D.seed)if(!S[k])S[k]=[];
 if(!S.dims)S.dims=JSON.parse(JSON.stringify(D.dims));
@@ -179,11 +180,11 @@ const C={
   filter:'crane',chips:()=>CR,calc:1,
   row:r=>{const c=calc(r);return{t:`${r.crane} · ${r.hoist}`,s:`${fmt(r.date)} · ${r.current||'–'} mm of ${r.std} mm · ${pc(c.red)} reduced (limit ${pc(c.lim,0)})`,n:r.status||'',b:c.check}},
   def:()=>({date:today(),crane:'Crane 6'}),xl:['inspect']},
- maint:{title:'Monthly Maintenance',icon:'🛠️',add:'New maintenance entry',sort:'month',desc:true,
-  fields:[{k:'month',l:'Month',t:'month',req:1},{k:'crane',l:'Crane',t:'select',o:[...CR,'All cranes'],req:1},{k:'type',l:'Type',t:'select',o:['Planned','Breakdown','Inspection','Lubrication','Other']},{k:'work',l:'Work done',t:'textarea',req:1},{k:'parts',l:'Parts / material used',t:'text'},{k:'downtime',l:'Downtime (minutes)',t:'number'},{k:'by',l:'Done by',t:'text'},{k:'remark',l:'Remarks',t:'textarea'}],
+ maint:{title:'Monthly Maintenance',icon:'🛠️',add:'New maintenance entry',sort:'date',desc:true,
+  fields:[{k:'date',l:'Date',t:'date',req:1},{k:'crane',l:'Crane',t:'select',o:[...CR,'All cranes'],req:1},{k:'type',l:'Type',t:'select',o:['Planned','Breakdown','Inspection','Lubrication','Other']},{k:'work',l:'Work done',t:'textarea',req:1},{k:'parts',l:'Parts / material used',t:'text'},{k:'downtime',l:'Downtime (minutes)',t:'number'},{k:'by',l:'Done by',t:'text'},{k:'remark',l:'Remarks',t:'textarea'}],
   filter:'crane',chips:()=>[...CR,'All cranes'],
-  row:r=>({t:`${r.crane} · ${r.work}`,s:`${fmtM(r.month)} · ${r.type||''}${r.downtime?' · '+r.downtime+' min down':''}`,n:[r.parts,r.by,r.remark].filter(Boolean).join(' · ')}),
-  def:()=>({month:today().slice(0,7),crane:'Crane 1',type:'Planned'}),xl:['maint'],
+  row:r=>({t:`${r.crane} · ${r.work}`,s:`${fmt(r.date)} · ${r.type||''}${r.downtime?' · '+r.downtime+' min down':''}`,n:[r.parts,r.by,r.remark].filter(Boolean).join(' · ')}),
+  def:()=>({date:today(),crane:'Crane 1',type:'Planned'}),xl:['maint'],
   sum:rows=>`<div class="sum"><div><b>${rows.length}</b>entries</div><div><b>${rows.reduce((a,r)=>a+(+r.downtime||0),0)}</b>min downtime</div></div>`},
  spares:{title:'Gear Couplings & Drums',icon:'⚙️',add:'New spares line',sort:'sr',
   fields:[{k:'cranes',l:'Cranes',t:'select',o:['No.6, No.7','No.2, 3, 4, 5','No.1'],req:1},{k:'cap',l:'Capacity',t:'text'},{k:'item',l:'Item',t:'text',req:1},{k:'need',l:'Our need',t:'number',req:1},{k:'store',l:'In store',t:'number'},{k:'shop',l:'In workshop',t:'number'},{k:'remark',l:'Remarks',t:'textarea'}],
@@ -236,7 +237,8 @@ const C={
 
 // ---------- app shell
 const ROUTES=[['home','🏠','Home'],['equip','🏭','Equipment'],['meas','📏','Measure'],['records','📋','Records'],['stocks','📦','Stocks']];
-let FILT={}, Q='';
+let FILT={}, Q='', SORTDIR={};
+const sortSeg=key=>`<div class="seg">${[['new','Newest first'],['old','Oldest first']].map(([v,l])=>`<button class="${(SORTDIR[key]||'new')===v?'on':''}" onclick="SORTDIR['${key}']='${v}';render()">${l}</button>`).join('')}</div>`;
 function shell(title,body,{back,fab,right}={}){
  let tab=(location.hash.split('/')[1]||'home');if(tab==='info'||tab==='furn')tab='equip';
  $('#app').innerHTML=`<div class="top">${back?`<button class="ib" onclick="go('${back}')" aria-label="Back">‹</button>`:''}<h1>${esc(title)}</h1>${right||''}<button class="ib" onclick="settings()" aria-label="Settings">⚙</button></div><div class="pad">${body}</div>${fab&&canEdit()?`<button class="fab" onclick="edit('${fab}')" aria-label="Add">＋</button>`:''}<nav class="nav">${ROUTES.map(r=>`<a href="#/${r[0]}" class="${tab===r[0]?'on':''}"><span>${r[1]}</span>${r[2]}</a>`).join('')}</nav>`;}
@@ -323,16 +325,18 @@ function editDim(sec,idx){
  if(!isNew)$('#del').onclick=()=>{if(confirm('Delete this row?')){S.dims[sec].splice(idx,1);save();bg.remove();toast('Row deleted');meas()}}}
 
 function menuPage(title,items,xl=[]){shell(title,items.map(i=>`<button class="li" onclick="go('#/${i[0]}')"><span class="big">${i[1]}</span><div class="m"><b>${i[2]}</b><small>${i[3]}</small></div><span class="arr">›</span></button>`).join('')+(xl.length?`<div class="sec">Download Excel (filled with your records)</div>${xl.map(xbtn).join('')}`:''))}
-const records=()=>menuPage('Records',[['records/coil','🧲','Furnace coil change record',`${S.coil.length} entries · furnaces 1A, 1B, 2A, 2B`],['records/fsvc','🔧','Furnace service record',`${S.fsvc.length} entries · view, add, edit`],['records/change','🔄','Crane rope change record',`${S.change.length} entries · view, add, edit`],['records/inspect','🔍','Crane rope inspection record',`${S.inspect.length} readings · view, add, edit`],['records/maint','🛠️','Monthly maintenance record',`${S.maint.length} entries · each crane, each month`]],['coil','change','inspect','maint']);
+const records=()=>menuPage('Records',[['records/coil','🧲','Furnace coil change record',`${S.coil.length} entries · furnaces 1A, 1B, 2A, 2B`],['records/fsvc','🔧','Furnace service record',`${S.fsvc.length} entries · view, add, edit`],['records/change','🔄','Crane rope change record',`${S.change.length} entries · view, add, edit`],['records/inspect','🔍','Crane rope inspection record',`${S.inspect.length} readings · view, add, edit`],['records/maint','🛠️','Monthly maintenance record',`${S.maint.length} entries · each crane, by date`]],['coil','change','inspect','maint']);
 const stocks=()=>menuPage('Stocks',[['stocks/furnace','🔥','Furnace stock',`${S.fstock.length} items · hoses, clamps, bolts, mica, valves`],['stocks/spares','⚙️','Gear couplings & drums',`${S.spares.length} lines · need vs stock`],['stocks/rope','🧵','Wire rope',`${S.ropeStock.reduce((a,r)=>a+(+r.qty||0),0)} pcs in stock · demand & consumed`],['stocks/misc','🧰','Gearboxes, shafts & brake leathers',`${S.misc.length} items`]],['gear','brake','rope']);
 
 function list(key,back,top=''){
  const c=C[key];let rows=[...S[key]];const f=FILT[key]||'all';
  if(c.filter&&f!=='all'){const ex=(c.extra||[]).find(e=>e.l===f);rows=ex?rows.filter(ex.f):rows.filter(r=>r[c.filter]===f)}
  if(Q){const q=Q.toLowerCase();rows=rows.filter(r=>JSON.stringify(r).toLowerCase().includes(q))}
- if(c.sort)rows.sort((a,b)=>{const x=a[c.sort]??'',y=b[c.sort]??'';const r=typeof x==='number'&&typeof y==='number'?x-y:String(x).localeCompare(String(y),undefined,{numeric:true});return c.desc?-r:r});
+ const dated=c.sort==='date',newest=(SORTDIR[key]||'new')==='new';
+ if(c.sort){rows=rows.map((r,i)=>[r,i]);rows.sort((A,B)=>{const x=A[0][c.sort]??'',y=B[0][c.sort]??'';let r=typeof x==='number'&&typeof y==='number'?x-y:String(x).localeCompare(String(y),undefined,{numeric:true});const d=dated?newest:c.desc;if(d)r=-r;return r||(d?B[1]-A[1]:A[1]-B[1])});rows=rows.map(x=>x[0])}
  const chips=c.filter?['all',...c.chips(),...(c.extra||[]).map(e=>e.l)]:[];
  const html=`${top}${c.sum?c.sum(rows):''}${c.filter?`<div class="chips">${chips.map(x=>`<button class="chip ${x===f?'on':''}" onclick="FILT['${key}']='${x}';render()">${x==='all'?'All':x}</button>`).join('')}</div>`:''}
+ ${dated?sortSeg(key):''}
  <input class="search" type="search" placeholder="Search…" value="${esc(Q)}" oninput="Q=this.value;listBody('${key}')" id="q_${key}">
  <div id="lb_${key}">${listItems(key,rows)}</div>
  <div style="margin-top:14px">${(c.xl||[]).map(xbtn).join('')}</div><div class="btns"><button class="btn" onclick="csv('${key}')">⬇ Export CSV</button></div>`;
@@ -351,17 +355,18 @@ function ropePage(){
 let HF='all',PRESET={},CUR_H=[];
 function inspectIndex(){
  const rank={'OVER LIMIT':4,'WATCH':3,'REPLACED – RE-MEASURE':2,'OK':1},lr=latestRopes();
- shell('Rope Inspection Record',`<div class="note">Pick a crane to open all its inspection readings, newest first.</div>`+CR.map(c=>{
+ shell('Rope Inspection Record',`<div class="note">Pick a crane to open all its inspection readings.</div>`+CR.map(c=>{
   const all=S.inspect.filter(r=>r.crane===c),worst=lr.filter(r=>r.crane===c).map(r=>calc(r).check).sort((a,b)=>(rank[b]||0)-(rank[a]||0))[0],last=all.map(r=>r.date||'').sort().pop();
   return `<button class="li" onclick="HF='all';go('#/records/inspect/${encodeURIComponent(c)}')"><div class="m"><b>${c}</b><small>${all.length} reading${all.length==1?'':'s'}${all.length?' · last checked '+fmt(last):''}</small></div>${worst?`<span class="tag ${tagCls(worst)}">${worst}</span>`:''}<span class="arr">›</span></button>`}).join('')+`<div style="margin-top:14px">${xbtn('inspect')}</div>`,{back:'#/records',fab:'inspect'})}
 function inspectCrane(c){
  PRESET={crane:c};
  const all=S.inspect.filter(r=>r.crane===c);CUR_H=[...new Set(all.map(r=>r.hoist))];
- const rows=all.filter(r=>HF==='all'||r.hoist===HF).sort((a,b)=>(b.date||'').localeCompare(a.date||'')||a.hoist.localeCompare(b.hoist));
+ const rows=all.filter(r=>HF==='all'||r.hoist===HF).sort((a,b)=>(SORTDIR.inspect==='old'?-1:1)*(b.date||'').localeCompare(a.date||'')||a.hoist.localeCompare(b.hoist));
  const lat=latestRopes().filter(r=>r.crane===c),dates=[...new Set(rows.map(r=>r.date))];
  shell(c+' · Inspections',`<div class="card"><h3>Latest reading of each hoist</h3>${lat.length?lat.map(r=>{const k=calc(r);return`<div style="display:flex;justify-content:space-between;gap:8px;padding:4px 0"><span>${esc(r.hoist)} · ${r.current} mm (${pc(k.red)}) <small style="color:var(--mute)">${fmt(r.date)}</small></span><span class="tag ${tagCls(k.check)}">${k.check}</span></div>`}).join(''):'No readings yet.'}</div>
  ${CUR_H.length>1?`<div class="chips"><button class="chip ${HF==='all'?'on':''}" onclick="HF='all';render()">All hoists</button>${CUR_H.map((h,i)=>`<button class="chip ${HF===h?'on':''}" onclick="HF=CUR_H[${i}];render()">${esc(h)}</button>`).join('')}</div>`:''}
- <div class="note">${rows.length} reading${rows.length==1?'':'s'} · newest first</div>
+ ${sortSeg('inspect')}
+ <div class="note">${rows.length} reading${rows.length==1?'':'s'} · ${SORTDIR.inspect==='old'?'oldest':'newest'} first</div>
  ${dates.length?dates.map(d=>`<div class="sec">${fmt(d)}</div>${listItems('inspect',rows.filter(r=>r.date===d))}`).join(''):listItems('inspect',[])}<div style="margin-top:14px">${xbtn('inspect')}</div>`,{back:'#/records/inspect',fab:'inspect'})}
 
 const hoistsFor=c=>D.specs.filter(s=>s.crane===c).map(s=>s.hoist);
@@ -708,12 +713,12 @@ function xMaint(){
  const bk=xbook(),sh=bk.sheet('Maintenance Record',{land:1,titles:'$7:$7',footer:'Sheikhoo Steel  •  Monthly Maintenance Record'});
  [8,13,15,14,46,30,13,16,34].forEach((w,i)=>sh.w(i+1,w));
  xTitle(sh,'MONTHLY MAINTENANCE RECORD',9);
- const rows=[...S.maint].sort((a,b)=>(a.month||'').localeCompare(b.month||'')||(CR.indexOf(a.crane)<0?99:CR.indexOf(a.crane))-(CR.indexOf(b.crane)<0?99:CR.indexOf(b.crane)));
+ const rows=[...S.maint].sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(CR.indexOf(a.crane)<0?99:CR.indexOf(a.crane))-(CR.indexOf(b.crane)<0?99:CR.indexOf(b.crane)));
  sh.set(5,1,'Melt Shop · Mechanical Maintenance · all EOT cranes',{i:1,sz:9,c:X_INK});
- xBar(sh,6,9,'MAINTENANCE LOG');xHead(sh,7,['Sr No','Month','Crane','Type','Work Done','Parts / Material Used','Downtime (min)','Done By','Remarks']);sh.freeze=7;
+ xBar(sh,6,9,'MAINTENANCE LOG');xHead(sh,7,['Sr No','Date','Crane','Type','Work Done','Parts / Material Used','Downtime (min)','Done By','Remarks']);sh.freeze=7;
  const n=Math.max(rows.length,10);let r=8;
  for(let i=0;i<n;i++,r++){const d=rows[i]||{};
-  sh.set(r,1,i+1,xs.td(i));sh.set(r,2,xDate(d.month),xs.td(i,{nf:'mmm yyyy',c:X_BLUE}));sh.set(r,3,d.crane??null,xs.td(i,{c:X_BLUE}));sh.set(r,4,d.type??null,xs.td(i,{c:X_BLUE}));
+  sh.set(r,1,i+1,xs.td(i));sh.set(r,2,xDate(d.date),xs.td(i,{nf:(d.date&&d.date.length===7?'mmm yyyy':DATE_NF),c:X_BLUE}));sh.set(r,3,d.crane??null,xs.td(i,{c:X_BLUE}));sh.set(r,4,d.type??null,xs.td(i,{c:X_BLUE}));
   sh.set(r,5,d.work??null,xs.td(i,{c:X_BLUE,h:'left'}));sh.set(r,6,d.parts??null,xs.td(i,{c:X_BLUE,h:'left'}));sh.set(r,7,num(d.downtime)??null,xs.td(i,{c:X_BLUE}));
   sh.set(r,8,d.by??null,xs.td(i,{c:X_BLUE}));sh.set(r,9,d.remark??null,xs.td(i,{c:X_BLUE,h:'left'}));
   sh.h(r,Math.max(20,Math.ceil(String(d.work||'').length/48)*15+4))}
