@@ -76,6 +76,7 @@ h3{margin:0 0 8px;font-size:14px}
 .sum{display:flex;gap:8px;margin-bottom:10px}.sum div{flex:1;background:var(--card);border-radius:12px;padding:8px 10px;font-size:11px;color:var(--mute)}.sum b{display:block;font-size:20px;color:var(--ink)}
 .prec{font-size:13px;margin:8px 0 0;padding-left:20px}.prec li{margin-bottom:5px}
 details.card summary{cursor:pointer;font-weight:bold;font-size:14px}
+.mt th,.mt td{padding:7px 3px;font-size:12px}.mt td.pend{font-size:10px}.mt td:first-child{padding-left:6px;min-width:64px}
 .fh th{text-align:center}.fh td{white-space:nowrap}
 </style>
 </head>
@@ -100,7 +101,9 @@ const PRECAUTIONS=["Once the furnace is down and the lining life has been reache
 const KEY='eot_crane_app_v1';let mem=null;
 function seed(){const s=JSON.parse(JSON.stringify(D.seed));for(const k in s)s[k].forEach(r=>r.id=uid());s.dims=JSON.parse(JSON.stringify(D.dims));return migrate(s)}
 // older data files (before furnaces were added) get the furnace sections filled in
-function migrate(o){if(!Array.isArray(o.coil))o.coil=COIL_SEED.map(r=>({...r}));if(!Array.isArray(o.fstock))o.fstock=FSTOCK_SEED.map(r=>({...r}));if(!Array.isArray(o.fsvc))o.fsvc=[];return o}
+function migrate(o){if(!Array.isArray(o.coil))o.coil=COIL_SEED.map(r=>({...r}));if(!Array.isArray(o.fstock))o.fstock=FSTOCK_SEED.map(r=>({...r}));if(!Array.isArray(o.fsvc))o.fsvc=[];
+// couplings / brake drums gained two hub-diameter columns: pad old rows; rows that are all N/A stay N/A
+for(const n of ['Couplings','Brake Drums'])((o.dims&&o.dims[n])||[]).forEach(r=>{if(r.length<8){while(r.length<8)r.push(null);if(r.slice(2,6).every(v=>v==='N/A'))r[6]=r[7]='N/A'}});return o}
 let S=(()=>{try{const t=localStorage.getItem(KEY);if(t)return JSON.parse(t)}catch(e){}return seed()})();
 for(const k in D.seed)if(!S[k])S[k]=[];
 if(!S.dims)S.dims=JSON.parse(JSON.stringify(D.dims));
@@ -249,7 +252,7 @@ function furnCard(f){const c=furnCoils(f.id),last=c[c.length-1],d=last?daysAgo(l
  return `<button class="li" onclick="go('#/furn/${f.id}')"><div class="m"><b>Furnace ${f.id} <span class="tag ${furnTag(f.status)}">${f.status}</span></b><small>${f.make} · ${f.cap}</small><div class="n">${last?`Last coil change ${fmt(last.date)}${d!=null&&d>=0?' · '+d+' days ago':''}`:(f.status==='Not installed'?'Not installed yet':'No coil change recorded')}</div></div><span class="arr">›</span></button>`}
 function home(){
  const yr=S.coil.filter(r=>{const d=daysAgo(r.date);return d!=null&&d>=0&&d<=365}).length,short=S.fstock.filter(r=>fstShort(r)>0).length;
- shell('Furnaces',`<div class="hero"><b>Sheikhoo Steel</b><span>Melt Shop · Mechanical Maintenance</span><small>${FURN.length} furnaces · ${GH.repo?(GH.token?'editor – changes are published online':'view only – live data'):'your edits are saved on this device'}</small></div>
+ shell('Mechanical Maintenance Data',`<div class="hero"><b>Sheikhoo Steel</b><span>Melt Shop · Mechanical Maintenance</span><small>${FURN.length} furnaces · ${GH.repo?(GH.token?'editor – changes are published online':'view only – live data'):'your edits are saved on this device'}</small></div>
  <div class="stats"><div class="stat"><i>${S.coil.length}</i><span>coil changes recorded</span></div><div class="stat"><i>${yr}</i><span>in the last 12 months</span></div><div class="stat"><i>${short}</i><span>furnace stock lines short</span></div></div>
  <div class="menu"><button class="mbtn red" onclick="go('#/equip')"><span class="ic">🏭</span><b>Equipment</b><span>Furnaces · cranes</span></button>
  <button class="mbtn" onclick="go('#/meas')"><span class="ic">📏</span><b>Crane measurements</b><span>Couplings, drums, wheels</span></button>
@@ -292,17 +295,17 @@ function info(name){
 
 let MG='Crane 1';
 const GS=['Crane 1','Cranes 2,3,4,5','Cranes 6,7','Crane N1','Crane N2'];
-const MSEC=[['Couplings',['Location','OD','ID in','ID out','PCD'],4],['Brake Drums',['Location','OD','ID in','ID out','PCD'],4],['Gear Boxes',['Location','Ratio','Vol. L'],2],['Wheels',['Wheel','Dia mm'],1],['Hoist Wire Rope',['Hoist','Size mm','Length ft','Remarks'],3]];
+const MSEC=[['Couplings',['Location','OD','Shaft size in','Shaft size out','PCD','Hub OD','Module'],6],['Brake Drums',['Location','OD','Shaft size in','Shaft size out','PCD','Hub OD','Module'],6],['Gear Boxes',['Location','Ratio','Vol. L'],2],['Wheels',['Wheel','Dia mm'],1],['Hoist Wire Rope',['Hoist','Size mm','Length ft','Remarks'],3]];
 function meas(){
  const cell=v=>v==null||v===''?'<td class="pend">pending</td>':`<td class="c">${esc(v)}</td>`;
  const sec=([n,head,cols])=>{const rows=(S.dims[n]||[]).map((r,i)=>[r,i]).filter(x=>x[0][0]===MG);
-  return `<div class="card"><h3>${n}</h3><div class="tw"><table class="tap"><tr>${head.map((h,i)=>`<th class="${i?'c':''}">${h}</th>`).join('')}</tr>${rows.map(([r,i])=>`<tr onclick="editDim('${n}',${i})"><td>${esc(r[1])}</td>${r.slice(2,2+cols).map(cell).join('')}</tr>`).join('')||`<tr><td colspan="${head.length}" class="pend">no rows</td></tr>`}</table></div>${canEdit()?`<button class="btn" style="width:100%;margin-top:8px" onclick="editDim('${n}')">＋ Add row</button>`:''}</div>`};
+  return `<div class="card"><h3>${n}</h3><div class="tw"><table class="tap${cols>4?' mt':''}"><tr>${head.map((h,i)=>`<th class="${i?'c':''}">${h}</th>`).join('')}</tr>${rows.map(([r,i])=>`<tr onclick="editDim('${n}',${i})"><td>${esc(r[1])}</td>${Array.from({length:cols},(_,k)=>r[2+k]).map(cell).join('')}</tr>`).join('')||`<tr><td colspan="${head.length}" class="pend">no rows</td></tr>`}</table></div>${canEdit()?`<button class="btn" style="width:100%;margin-top:8px" onclick="editDim('${n}')">＋ Add row</button>`:''}</div>`};
  shell('Measurements',`<div class="chips">${GS.map(g=>`<button class="chip ${g===MG?'on':''}" onclick="MG='${g}';meas()">${g}</button>`).join('')}</div>
  <div class="note" style="margin-top:0">${canEdit()?'Tap any row to enter or change its measurements.':'View only.'}</div>
  ${MSEC.map(sec).join('')}<div class="note">mm unless stated · "pending" = not yet measured · type N/A where a part does not exist.</div>`)}
 function editDim(sec,idx){
  if(viewOnly())return;const def=MSEC.find(m=>m[0]===sec),head=def[1],n=def[2],isNew=idx==null;
- const rec=isNew?[MG,'',null,null,null,null]:[...S.dims[sec][idx]];while(rec.length<6)rec.push(null);
+ const rec=isNew?[MG,'',null,null,null,null,null,null]:[...S.dims[sec][idx]];while(rec.length<8)rec.push(null);
  const last=sec==='Hoist Wire Rope'?n:0; // remarks column is free text
  const vf=i=>{const v=rec[1+i]??'';const txt=i===last;return `<div class="fld"><label>${head[i]}</label><div style="display:flex;gap:8px"><input id="d_${i}" type="text" ${txt?'':'inputmode="decimal"'} value="${esc(v)}" placeholder="${txt?'':'not measured yet'}">${txt?'':`<button class="btn" style="flex:0 0 auto" onclick="document.getElementById('d_${i}').value='N/A'">N/A</button>`}</div></div>`};
  const bg=document.createElement('div');bg.className='sheet-bg';
@@ -314,7 +317,7 @@ function editDim(sec,idx){
  document.body.appendChild(bg);bg.addEventListener('click',e=>{if(e.target===bg)bg.remove()});
  $('#cancel').onclick=()=>bg.remove();
  $('#ok').onclick=()=>{const name=$('#d_0').value.trim();if(!name){toast('Please fill: '+head[0]);return}
-  const o=[$('#d_g').value,name];for(let k=1;k<=4;k++){const el=$('#d_'+k);let v=el?el.value.trim():'';if(v==='')v=null;else if(k<=n&&k!==last&&/^-?\d+(\.\d+)?$/.test(v))v=+v;o.push(v)}
+  const o=[$('#d_g').value,name];for(let k=1;k<=Math.max(4,n);k++){const el=$('#d_'+k);let v=el?el.value.trim():'';if(v==='')v=null;else if(k<=n&&k!==last&&/^-?\d+(\.\d+)?$/.test(v))v=+v;o.push(v)}
   if(isNew)S.dims[sec].push(o);else S.dims[sec][idx]=o;
   MG=o[0];save();bg.remove();toast(isNew?'Row added':'Measurement saved');meas()};
  if(!isNew)$('#del').onclick=()=>{if(confirm('Delete this row?')){S.dims[sec].splice(idx,1);save();bg.remove();toast('Row deleted');meas()}}}
