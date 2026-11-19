@@ -96,12 +96,13 @@ const FURN=[{"id":"1A","make":"Inductotherm","cap":"20 T","status":"In service"}
 const FN=FURN.map(f=>f.id);
 const COIL_SEED=[{"id":"coil-1A-1","furnace":"1A","date":"2023-05-08","tj":1732.28,"tt":1727.2,"cj":1752.6,"ct":1732.28,"bj":1765.3,"bt":1752.5,"remark":"Changed its life completed"},{"id":"coil-1A-2","furnace":"1A","date":"2023-10-23","tj":2032,"tt":2052,"cj":2057.4,"ct":2032,"bj":2000.6,"bt":2035,"remark":"Damaged"},{"id":"coil-1A-3","furnace":"1A","date":"2024-07-08","tj":1770,"tt":1740,"cj":1815,"ct":1765,"bj":1830,"bt":1790,"remark":"Changed its life completed · Year written as 202 in the original sheet; 2024 assumed."},{"id":"coil-1A-4","furnace":"1A","date":"2025-02-16","tj":1796,"tt":1744,"cj":1806,"ct":1751,"bj":1834,"bt":1765,"remark":"Changed its life completed"},{"id":"coil-1A-5","furnace":"1A","date":"2025-09-20","tj":1720,"tt":1810,"cj":1780,"ct":1740,"bj":1790,"bt":1770,"remark":"Changed its life completed"},{"id":"coil-1A-6","furnace":"1A","date":"2026-09-20","tj":"","tt":"","cj":"","ct":"","bj":"","bt":"","remark":"Changed its life completed"},{"id":"coil-1B-1","furnace":"1B","date":"2023-03-25","tj":"","tt":"","cj":"","ct":"","bj":"","bt":"","remark":"No data recorded"},{"id":"coil-1B-2","furnace":"1B","date":"2023-12-10","tj":1828,"tt":1778,"cj":1847,"ct":1797,"bj":1854,"bt":1778,"remark":"Changed its life completed"},{"id":"coil-1B-3","furnace":"1B","date":"2024-08-12","tj":1785,"tt":1725,"cj":1810,"ct":1740,"bj":1820,"bt":1770,"remark":"Changed its life completed"},{"id":"coil-1B-4","furnace":"1B","date":"2025-07-14","tj":1785,"tt":1750,"cj":1796,"ct":1768,"bj":1815,"bt":1792,"remark":"Changed its life completed"},{"id":"coil-1B-5","furnace":"1B","date":"2026-07-17","tj":1730,"tt":1800,"cj":1780,"ct":1810,"bj":1770,"bt":1790,"remark":"Changed its life completed"},{"id":"coil-2A-1","furnace":"2A","date":"2023-02-04","tj":"","tt":"","cj":"","ct":"","bj":"","bt":"","remark":"No data recorded"},{"id":"coil-2A-2","furnace":"2A","date":"2023-08-12","tj":1819,"tt":2052,"cj":1825,"ct":2032,"bj":1864,"bt":2035,"remark":"Changed its life completed"},{"id":"coil-2A-3","furnace":"2A","date":"2024-10-31","tj":1760,"tt":1715,"cj":1820,"ct":1755,"bj":1830,"bt":1760,"remark":"Changed its life completed"},{"id":"coil-2A-4","furnace":"2A","date":"2025-09-14","tj":1750,"tt":1730,"cj":1780,"ct":1750,"bj":1860,"bt":1780,"remark":"Changed its life completed"},{"id":"coil-2A-5","furnace":"2A","date":"2026-07-06","tj":1651,"tt":1780,"cj":1600,"ct":1820,"bj":1549,"bt":1620.3,"remark":"Changed its life completed"},{"id":"coil-2B-1","furnace":"2B","date":"2023-07-22","tj":"","tt":"","cj":"","ct":"","bj":"","bt":"","remark":"No data recorded"},{"id":"coil-2B-2","furnace":"2B","date":"2024-04-13","tj":1734,"tt":1764,"cj":1761,"ct":1764,"bj":1782,"bt":1776,"remark":"Changed its life completed"},{"id":"coil-2B-3","furnace":"2B","date":"2025-05-02","tj":1785,"tt":1750,"cj":1796,"ct":1768,"bj":1815,"bt":1792,"remark":""},{"id":"coil-2B-4","furnace":"2B","date":"2026-07-03","tj":1732,"tt":1796,"cj":1748,"ct":1808,"bj":1742,"bt":1835,"remark":"Changed its life completed"}];
 const FSTOCK_SEED=[{"id":"fs-01","cat":"Rubber hose pipe","item":"Carbonless rubber hose pipe","spec":"2\"","need":"","store":"","remark":""},{"id":"fs-02","cat":"Rubber hose pipe","item":"Carbonless rubber hose pipe","spec":"1\"","need":"","store":"","remark":""},{"id":"fs-03","cat":"Rubber hose pipe","item":"Carbonless rubber hose pipe","spec":"1-1/2\"","need":"","store":"","remark":""},{"id":"fs-04","cat":"Rubber hose pipe","item":"Carbonless rubber hose pipe","spec":"1-1/4\"","need":"","store":"","remark":""},{"id":"fs-05","cat":"Rubber hose pipe","item":"Carbonless rubber hose pipe","spec":"3/4\"","need":"","store":"","remark":""},{"id":"fs-06","cat":"Rubber hose pipe","item":"Carbonless rubber hose pipe","spec":"1/2\"","need":"","store":"","remark":""},{"id":"fs-07","cat":"Nut bolts","item":"(SS) Nut bolts with washer","spec":"12 mm x 50 mm","need":"","store":"","remark":""},{"id":"fs-08","cat":"Nut bolts","item":"(SS) Nut bolts with washer","spec":"12 mm x 75 mm","need":"","store":"","remark":""},{"id":"fs-09","cat":"Nut bolts","item":"(SS) Nut bolts with washer","spec":"14 mm x 75 mm","need":"","store":"","remark":""},{"id":"fs-10","cat":"Clamps","item":"Jubilee clamps","spec":"1/2\"","need":"","store":"","remark":""},{"id":"fs-11","cat":"Clamps","item":"Jubilee clamps","spec":"3/4\"","need":"","store":"","remark":""},{"id":"fs-12","cat":"Clamps","item":"Jubilee clamps","spec":"1\"","need":"","store":"","remark":""},{"id":"fs-13","cat":"Clamps","item":"Jubilee clamps","spec":"1-1/2\"","need":"","store":"","remark":""},{"id":"fs-14","cat":"Clamps","item":"Jubilee clamps","spec":"2\"","need":"","store":"","remark":""},{"id":"fs-15","cat":"Clamps","item":"Jubilee clamps","spec":"2-1/2\"","need":"","store":"","remark":""},{"id":"fs-16","cat":"Clamps","item":"Jubilee clamps","spec":"3\"","need":"","store":"","remark":""},{"id":"fs-17","cat":"Clamps","item":"Jubilee clamps","spec":"4\"","need":"","store":"","remark":""},{"id":"fs-18","cat":"Asbestos strip","item":"Asbestos strip","spec":"2\"","need":"","store":"","remark":""},{"id":"fs-19","cat":"Asbestos strip","item":"Asbestos strip","spec":"4\"","need":"","store":"","remark":""},{"id":"fs-20","cat":"Mega sheet","item":"Mega sheet","spec":"Packets","need":"","store":"","remark":""},{"id":"fs-21","cat":"Mica pipe","item":"Mica pipe","spec":"Pipe","need":"","store":"","remark":""},{"id":"fs-22","cat":"Cables","item":"Water cool jumper cables","spec":"Power cable","need":"","store":"","remark":""},{"id":"fs-23","cat":"Ball valves","item":"(SS) Ball valve","spec":"1\"","need":"","store":"","remark":""},{"id":"fs-24","cat":"Ball valves","item":"(SS) Ball valve","spec":"2\"","need":"","store":"","remark":""},{"id":"fs-25","cat":"Tools","item":"Torque wrench","spec":"HANS (600 Nm)","need":"","store":"","remark":""}];
+const SHUT_EQ=['Furnace','Crane','Tracks (crane, Vibro feeders and LTC)','Shed','Transformer heat exchanger','DM heat exchanger','Mixture machine','Vibro feeders','LTC','APC hoods'];
 const FCATS=["Rubber hose pipe","Nut bolts","Clamps","Asbestos strip","Mega sheet","Mica pipe","Cables","Ball valves","Tools"];
 const PRECAUTIONS=["Once the furnace is down and the lining life has been reached, allow it to cool. Break and remove the lining/bottom through the refractory team.","After removing the lining from the spout area, open and remove the main studs, blocks, and safety plate.","Detach all yokes and power-cable cooling pipes. Remove all mica sheets beneath the blocks.","The coil becomes free to lift for replacement or maintenance.","Remove old coil grout and damaged mica spacers. Take measurements from the inside of the coil turns at two areas: the connection side and the spout side, for further analysis and maintenance.","After inspection, place the coil on a coil drum to make its diameter correct or adjust it if needed.","Once the coil diameter is confirmed, begin maintenance/overhauling. Replace damaged fiber supports and change or weld SS studs if required.","Replace damaged insulation tape. Clean and buff all copper coil turns, then wrap new insulation tape and apply resin/paint.","After insulation and painting, pack the coil with G.I. sheets and wood for coil grouting. Dry the grout according to the respective drying cycle.","Replace damaged cooling pipes, water-cooled power cables, and shunt insulation pads if required. Carefully place and center the coil","After placing the coil, fix mica sheets between the blocks and the coil insulator.","After adding or adjusting mica sheets, tighten all block studs to 325 Nm using a torque wrench. Connect the coil’s water-cooled power cables, shunts, and cooling pipes."];
 const KEY='eot_crane_app_v1';let mem=null;
 function seed(){const s=JSON.parse(JSON.stringify(D.seed));for(const k in s)s[k].forEach(r=>r.id=uid());s.dims=JSON.parse(JSON.stringify(D.dims));return migrate(s)}
 // older data files (before furnaces were added) get the furnace sections filled in
-function migrate(o){if(!Array.isArray(o.coil))o.coil=COIL_SEED.map(r=>({...r}));if(!Array.isArray(o.fstock))o.fstock=FSTOCK_SEED.map(r=>({...r}));if(!Array.isArray(o.fsvc))o.fsvc=[];
+function migrate(o){if(!Array.isArray(o.coil))o.coil=COIL_SEED.map(r=>({...r}));if(!Array.isArray(o.fstock))o.fstock=FSTOCK_SEED.map(r=>({...r}));if(!Array.isArray(o.fsvc))o.fsvc=[];if(!Array.isArray(o.shut))o.shut=[];
 // couplings / brake drums gained two hub-diameter columns: pad old rows; rows that are all N/A stay N/A
 for(const n of ['Couplings','Brake Drums'])((o.dims&&o.dims[n])||[]).forEach(r=>{if(r.length<8){while(r.length<8)r.push(null);if(r.slice(2,6).every(v=>v==='N/A'))r[6]=r[7]='N/A'}});
 (o.maint||[]).forEach(r=>{if(r.month!==undefined){if(!r.date)r.date=r.month;delete r.month}});return o}
@@ -159,7 +160,7 @@ const limitFor=c=>LADLE.includes(c)?.07:.10;
 function calc(r){const std=+r.std,cur=+r.current;if(!std||!cur)return{red:null,lim:limitFor(r.crane),disc:null,check:'–'};
  const red=1-cur/std,lim=limitFor(r.crane),disc=std*(1-lim);
  const check=r.replaced?'REPLACED – RE-MEASURE':red>=lim?'OVER LIMIT':red>=.8*lim?'WATCH':'OK';return{red,lim,disc,check}}
-const tagCls=c=>({'OK':'ok','WATCH':'watch','OVER LIMIT':'over','REPLACED – RE-MEASURE':'re','SHORT':'over','ENOUGH':'ok'}[c]||'gray');
+const tagCls=c=>({'OK':'ok','WATCH':'watch','OVER LIMIT':'over','REPLACED – RE-MEASURE':'re','SHORT':'over','ENOUGH':'ok','DONE':'ok'}[c]||'gray');
 const pc=(v,d=1)=>v==null?'–':(v*100).toFixed(d)+'%';
 function latestRopes(){const m={};S.inspect.forEach(r=>{const k=r.crane+'|'+r.hoist;if(!m[k]||(r.date||'')>=(m[k].date||''))m[k]=r});return Object.values(m)}
 const spareShort=r=>Math.max(0,(+r.need||0)-((+r.store||0)+(+r.shop||0)));
@@ -232,7 +233,14 @@ const C={
    filter:'cat',chips:()=>FCATS,extra:[{l:'Short only',f:r=>fstShort(r)>0}],
    row:r=>({t:`${r.item}${r.spec?' – '+r.spec:''}`,s:r.cat,n:r.remark,b:fstShort(r)?'SHORT':'',b2:`Need ${r.need===''||r.need==null?'–':r.need} · Store ${r.store===''||r.store==null?'–':r.store}`}),
    def:()=>({cat:'Rubber hose pipe'}),
-   sum:rows=>`<div class="sum"><div><b>${rows.length}</b>items</div><div><b>${rows.filter(r=>r.store!==''&&r.store!=null).length}</b>counted</div><div><b>${rows.filter(r=>fstShort(r)>0).length}</b>short</div></div>`}
+   sum:rows=>`<div class="sum"><div><b>${rows.length}</b>items</div><div><b>${rows.filter(r=>r.store!==''&&r.store!=null).length}</b>counted</div><div><b>${rows.filter(r=>fstShort(r)>0).length}</b>short</div></div>`},
+  shut:{title:'Shut Down Record',icon:'⛔',add:'New shut down entry',sort:'date',desc:true,
+   fields:[{k:'date',l:'Date of maintenance',t:'date',req:1},{k:'equip',l:'Maintenance on (equipment)',t:'select',o:SHUT_EQ,req:1},{k:'loc',l:'Location',t:'text'},
+    {k:'pct',l:'Work done (%)',t:'number',min:0,max:100,req:1},{k:'by',l:'Work done by',t:'text'},{k:'remark',l:'Remarks',t:'textarea'}],
+   filter:'equip',chips:()=>SHUT_EQ,extra:[{l:'Not complete',f:r=>(+r.pct||0)<100}],
+   row:r=>({t:`${r.equip}${r.loc?' · '+r.loc:''}`,s:`${fmt(r.date)} · ${r.pct===''||r.pct==null?'–':r.pct+'%'} work done${r.by?' · '+r.by:''}`,n:r.remark,b:(+r.pct>=100)?'DONE':''}),
+   def:()=>({date:today(),equip:SHUT_EQ[0]}),xl:['shut'],
+   sum:rows=>`<div class="sum"><div><b>${rows.length}</b>entries</div><div><b>${rows.length?Math.round(rows.reduce((a,r)=>a+(+r.pct||0),0)/rows.length):'–'}%</b>avg work done</div></div>`}
 };
 
 // ---------- app shell
@@ -325,7 +333,7 @@ function editDim(sec,idx){
  if(!isNew)$('#del').onclick=()=>{if(confirm('Delete this row?')){S.dims[sec].splice(idx,1);save();bg.remove();toast('Row deleted');meas()}}}
 
 function menuPage(title,items,xl=[]){shell(title,items.map(i=>`<button class="li" onclick="go('#/${i[0]}')"><span class="big">${i[1]}</span><div class="m"><b>${i[2]}</b><small>${i[3]}</small></div><span class="arr">›</span></button>`).join('')+(xl.length?`<div class="sec">Download Excel (filled with your records)</div>${xl.map(xbtn).join('')}`:''))}
-const records=()=>menuPage('Records',[['records/coil','🧲','Furnace coil change record',`${S.coil.length} entries · furnaces 1A, 1B, 2A, 2B`],['records/fsvc','🔧','Furnace service record',`${S.fsvc.length} entries · view, add, edit`],['records/change','🔄','Crane rope change record',`${S.change.length} entries · view, add, edit`],['records/inspect','🔍','Crane rope inspection record',`${S.inspect.length} readings · view, add, edit`],['records/maint','🛠️','Monthly maintenance record',`${S.maint.length} entries · each crane, by date`]],['coil','change','inspect','maint']);
+const records=()=>menuPage('Records',[['records/coil','🧲','Furnace coil change record',`${S.coil.length} entries · furnaces 1A, 1B, 2A, 2B`],['records/fsvc','🔧','Furnace service record',`${S.fsvc.length} entries · view, add, edit`],['records/change','🔄','Crane rope change record',`${S.change.length} entries · view, add, edit`],['records/inspect','🔍','Crane rope inspection record',`${S.inspect.length} readings · view, add, edit`],['records/shut','⛔','Shut down record',`${S.shut.length} entries · equipment, location, % work done`],['records/maint','🛠️','Monthly maintenance record',`${S.maint.length} entries · each crane, by date`]],['coil','change','inspect','maint','shut']);
 const stocks=()=>menuPage('Stocks',[['stocks/furnace','🔥','Furnace stock',`${S.fstock.length} items · hoses, clamps, bolts, mica, valves`],['stocks/spares','⚙️','Gear couplings & drums',`${S.spares.length} lines · need vs stock`],['stocks/rope','🧵','Wire rope',`${S.ropeStock.reduce((a,r)=>a+(+r.qty||0),0)} pcs in stock · demand & consumed`],['stocks/misc','🧰','Gearboxes, shafts & brake leathers',`${S.misc.length} items`]],['gear','brake','rope']);
 
 function list(key,back,top=''){
@@ -386,7 +394,7 @@ function edit(key,id){
   if(newIns&&f.k==='hoist'){f.o=hoistsFor(rec.crane);if(!rec.hoist)rec.hoist=f.o[0]||''}
   if(f.t==='select')inp=`<select id="${nm}">${f.o.map(o=>`<option ${o===v?'selected':''} value="${esc(o)}">${o||'— select —'}</option>`).join('')}</select>`;
   else if(f.t==='textarea')inp=`<textarea id="${nm}">${esc(v)}</textarea>`;
-  else if(f.t==='number')inp=`<input id="${nm}" type="number" inputmode="decimal" step="any" value="${esc(v)}">`;
+  else if(f.t==='number')inp=`<input id="${nm}" type="number" inputmode="decimal" step="any" ${f.min!=null?`min="${f.min}"`:''} ${f.max!=null?`max="${f.max}"`:''} value="${esc(v)}">`;
   else inp=`<input id="${nm}" type="${f.t==='date'?'date':f.t==='month'?'month':'text'}" ${f.list?'list="hoists"':''} value="${esc(v)}">`;
   return `<div class="fld"><label>${f.l}${f.req?' *':''}</label>${inp}</div>`};
  const bg=document.createElement('div');bg.className='sheet-bg';
@@ -398,6 +406,7 @@ function edit(key,id){
  bg.addEventListener('click',e=>{if(e.target===bg)bg.remove()});
  $('#cancel').onclick=()=>bg.remove();
  $('#ok').onclick=()=>{const o=read();const miss=FL.find(f=>f.req&&(o[f.k]===''||o[f.k]==null));if(miss){toast(`Please fill: ${miss.l}`);return}
+  const bad=FL.find(f=>f.t==='number'&&o[f.k]!==''&&o[f.k]!=null&&((f.min!=null&&o[f.k]<f.min)||(f.max!=null&&o[f.k]>f.max)));if(bad){toast(`${bad.l} must be between ${bad.min} and ${bad.max}`);return}
   if(isNew)S[key].push({id:uid(),...o});else Object.assign(S[key].find(r=>r.id===id),o);save();bg.remove();toast(isNew?'Saved':'Updated');render()};
  if(!isNew)$('#del').onclick=()=>{if(confirm('Delete this record?')){S[key]=S[key].filter(r=>r.id!==id);save();bg.remove();toast('Deleted');render()}}}
 
@@ -793,8 +802,28 @@ function xCoil(){
   PRECAUTIONS.forEach((p,i)=>{const st={sz:10,w:1,v:'top',h:'left'};sh.set(r,1,(i+1)+'. '+p,st);sh.merge(r,1,r,6,st);sh.h(r,Math.max(18,Math.ceil(p.length/100)*14+6));r++})}
  return bk}
 
+// =====================================================================
+// Shut down record
+// =====================================================================
+function xShut(){
+ const bk=xbook(),sh=bk.sheet('Shut Down Record',{land:1,titles:'$7:$7',footer:'Sheikhoo Steel  •  Shut Down Record'});
+ [8,16,34,26,15,22,40].forEach((w,i)=>sh.w(i+1,w));
+ xTitle(sh,'SHUT DOWN MAINTENANCE RECORD',7);
+ const rows=[...S.shut].sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+ sh.set(5,1,'Melt Shop · Mechanical Maintenance · shut down work',{i:1,sz:9,c:X_INK});
+ xBar(sh,6,7,'SHUT DOWN LOG');xHead(sh,7,['Sr No','Date of Maintenance','Maintenance On','Location','Work Done (%)','Work Done By','Remarks']);sh.freeze=7;
+ const n=Math.max(rows.length,10);let r=8;
+ for(let i=0;i<n;i++,r++){const d=rows[i]||{};
+  sh.set(r,1,i+1,xs.td(i));sh.set(r,2,xDate(d.date),xs.td(i,{nf:DATE_NF,c:X_BLUE}));sh.set(r,3,d.equip??null,xs.td(i,{c:X_BLUE,h:'left'}));sh.set(r,4,d.loc??null,xs.td(i,{c:X_BLUE,h:'left'}));
+  sh.set(r,5,num(d.pct)??null,xs.td(i,{c:X_BLUE}));sh.set(r,6,d.by??null,xs.td(i,{c:X_BLUE}));sh.set(r,7,d.remark??null,xs.td(i,{c:X_BLUE,h:'left'}));
+  sh.h(r,Math.max(20,Math.ceil(String(d.remark||'').length/44)*15+4))}
+ r+=1;const sg={b:1,sz:11,v:'top',w:1,bd:'thin'},t='\n\n\n\nName & Sign: ____________________';
+ sh.set(r,1,'Shift Incharge Mechanical'+t,sg);sh.merge(r,1,r,3,sg);sh.set(r,4,'Mechanical Incharge'+t,{...sg,h:'center'});sh.merge(r,4,r,5,{...sg,h:'center'});sh.set(r,6,'Manager'+t,sg);sh.merge(r,6,r,7,sg);sh.h(r,90);
+ return bk}
+
 // ---------- registry + download
 const XLS={
+  shut:{name:'Shut down record',file:'Shut_Down_Record',fn:xShut},
   coil:{name:'Furnace coil change record',file:'Furnace_Coil_Change_Record',fn:xCoil},
  change:{name:'Wire rope change record',file:'Wire_Rope_Change_Record',fn:xChange},
  inspect:{name:'Wire rope inspection record',file:'Wire_Rope_Inspection_Record',fn:xInspect},
